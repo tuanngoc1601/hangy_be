@@ -1,0 +1,45 @@
+version: '3.8'
+
+services:
+  app: 
+    image: php:8.3-fpm
+    container_name: app
+    restart: unless-stopped
+    working_dir: /var/www
+    volumes:
+      - ./:/var/www
+      # - docker/php/local.ini:/usr/local/etc/php/conf.d/local.ini
+    networks:
+      - laravel
+  
+  db:
+    image: mysql
+    container_name: mysql
+    restart: unless-stopped
+    ports:
+      - 3306:3306
+    volumes:
+      - ./mysql/data:/var/lib/mysql
+    environment:
+      - MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
+      - MYSQL_DATABASE: ${DB_DATABASE}
+      - MYSQL_USER: ${DB_USERNAME}
+      - MYSQL_PASSWORD: ${DB_PASSWORD}
+    networks:
+      - laravel
+  
+  nginx: 
+    image: nginx:alpine
+    container_name: nginx
+    restart: unless-stopped
+    ports:
+      - 8080:80
+    volumes:
+      # - ./:/var/www
+      - ./:/etc/nginx/nginx.conf
+    networks:
+      - laravel
+
+networks:
+  laravel:
+    driver: bridge
