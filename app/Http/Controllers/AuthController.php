@@ -10,12 +10,12 @@ use Illuminate\Http\Request;
 
 class AuthController extends Controller
 {
-    public function register(RegisterRequest $request) : JsonResponse
+    public function register(RegisterRequest $request): JsonResponse
     {
         $credentials = $request->validated();
 
         $user = new User();
-        $user->name = $credentials['name'];
+        // $user->name = $credentials['name'];
         $user->email = $credentials['email'];
         $user->username = $credentials['username'];
         $user->password = bcrypt($credentials['password']);
@@ -86,11 +86,12 @@ class AuthController extends Controller
     protected function respondWithToken($token): JsonResponse
     {
         $user = auth()->user();
+        $user['access_token'] = $token;
+        $user['token_type'] = 'bearer';
+        $user['expires_in'] = auth('api')->factory()->getTTL() * 60;
         return response()->json([
-            'user' => $user,
-            'access_token' => $token,
-            'token_type' => 'bearer',
-            'expires_in' => auth('api')->factory()->getTTL() * 60
+            'data' => $user,
+            'message' => 'Ok',
         ], 200);
     }
 }
