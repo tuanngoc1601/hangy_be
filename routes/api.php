@@ -18,7 +18,11 @@ Route::group([
     Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth:api')->name('logout');
     Route::post('/refresh', [AuthController::class, 'refresh'])->middleware('auth:api')->name('refresh');
     Route::get('/me', [AuthController::class, 'me'])->middleware('auth:api')->name('me');
+});
 
+Route::group([
+    'prefix' => 'v1/auth'
+], function () {
     Route::get('/google-auth/redirect', [GoogleAuthController::class, 'redirect']);
     Route::get('/google-auth/callback', [GoogleAuthController::class, 'callback']);
 });
