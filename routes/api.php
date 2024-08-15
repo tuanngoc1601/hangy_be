@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\FacebookAuthController;
 use App\Http\Controllers\GoogleAuthController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -25,4 +26,6 @@ Route::group([
 ], function () {
     Route::get('/google-auth/redirect', [GoogleAuthController::class, 'redirect']);
     Route::get('/google-auth/callback', [GoogleAuthController::class, 'callback']);
+    Route::get('/facebook-auth/redirect', [FacebookAuthController::class, 'redirect']);
+    Route::get('/facebook-auth/callback', [FacebookAuthController::class, 'callback']);
 });

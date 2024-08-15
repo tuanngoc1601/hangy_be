@@ -7,6 +7,7 @@ use App\Http\Requests\RegisterRequest;
 use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class AuthController extends Controller
 {
@@ -34,7 +35,7 @@ class AuthController extends Controller
     {
         $credentials = $request->validated();
 
-        if (!$token = auth()->attempt($credentials)) {
+        if (!$token = Auth::attempt($credentials)) {
             return response()->json(['error' => 'Unauthorized'], 401);
         }
 
@@ -50,7 +51,7 @@ class AuthController extends Controller
     {
         return response()->json([
             'message' => "Ok",
-            'user' => auth()->user(),
+            'user' => Auth::user(),
         ], 200);
     }
 
@@ -61,7 +62,7 @@ class AuthController extends Controller
      */
     public function logout(): JsonResponse
     {
-        auth()->logout();
+        Auth::logout();
 
         return response()->json(['message' => 'Successfully logged out'], 200);
     }
@@ -85,7 +86,7 @@ class AuthController extends Controller
      */
     protected function respondWithToken($token): JsonResponse
     {
-        $user = auth()->user();
+        $user = Auth::user();
         $user['access_token'] = $token;
         // $user['token_type'] = 'bearer';
         // $user['expires_in'] = auth('api')->factory()->getTTL() * 60;
