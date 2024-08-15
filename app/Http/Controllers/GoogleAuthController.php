@@ -34,7 +34,8 @@ class GoogleAuthController extends Controller
                 'message' => 'Ok',
             ]);
         } else {
-            $newUser = User::updateOrCreate(['email' => $user->email], [
+            $newUser = User::updateOrCreate([
+                'email' => $user->email,
                 'name' => $user->name,
                 'email_verified_at' => Carbon::now(),
                 'social_provider' => 'google',
