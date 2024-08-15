@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use Carbon\Carbon;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -20,15 +21,14 @@ class GoogleAuthController extends Controller
 
     public function callback(Request $request)
     {
-//      try {
         if ($request->get('error') == 'access_denied') {
             return redirect('login');
         }
         $user = Socialite::driver('google')->stateless()->user();
         $findUser = User::where('google_id', $user->id)->first();
         if ($findUser) {
-            Auth::login($findUser);
-//                $user['access_token'] = $token;
+            $token = Auth::login($findUser);
+            $findUser["access_token"] = $token;
             return response()->json([
                 'data' => $findUser,
                 'message' => 'Ok',
@@ -36,20 +36,17 @@ class GoogleAuthController extends Controller
         } else {
             $newUser = User::updateOrCreate(['email' => $user->email], [
                 'name' => $user->name,
-                'username' => $user->email,
+                'email_verified_at' => Carbon::now()->timestamp,
                 'google_id' => $user->id,
                 'password' => Hash::make(12345678)
             ]);
 
-            Auth::login($newUser);
-//                $newUser['access_token'] = $token;
+            $token = Auth::login($newUser);
+            $newUser["access_token"] = $token;
             return response()->json([
                 'data' => $newUser,
                 'message' => 'Ok',
             ]);
         }
-//      } catch (Exception $e) {
-//          dd($e->getMessage());
-//      }
     }
 }
