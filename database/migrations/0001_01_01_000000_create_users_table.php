@@ -20,7 +20,7 @@ return new class extends Migration
             $table->string('password')->nullable();
             $table->string('social_provider')->nullable();
             $table->string('social_id')->nullable();
-            $table->rememberToken();
+            $table->string('refresh_token')->nullable();
             $table->timestamps();
         });
 
