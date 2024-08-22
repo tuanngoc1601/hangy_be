@@ -6,26 +6,25 @@ use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Hash;
 use Laravel\Socialite\Facades\Socialite;
 use Tymon\JWTAuth\Facades\JWTAuth;
 
-class GoogleAuthController extends Controller
+class SocialAuthController extends Controller
 {
-    public function redirect(Request $request)
+    public function redirect($provider, Request $request)
     {
         return response()->json([
-            'data' => Socialite::driver('google')->stateless()->redirect()->getTargetUrl(),
+            'data' => Socialite::driver($provider)->stateless()->redirect()->getTargetUrl(),
         ]);
     }
 
-    public function callback(Request $request)
+    public function callback($provider, Request $request)
     {
         if ($request->get('error') == 'access_denied') {
             return redirect('login');
         }
 
-        $user = Socialite::driver('google')->stateless()->user();
+        $user = Socialite::driver($provider)->stateless()->user();
 
         $findUser = User::where('social_id', $user->id)->first();
 
@@ -45,7 +44,7 @@ class GoogleAuthController extends Controller
                 'email' => $user->email,
                 'name' => $user->name,
                 'email_verified_at' => Carbon::now(),
-                'social_provider' => 'google',
+                'social_provider' => $provider,
                 'social_id' => $user->id,
             ]);
 
