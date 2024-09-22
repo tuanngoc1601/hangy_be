@@ -4,9 +4,12 @@ namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Tymon\JWTAuth\Contracts\JWTSubject;
+use Hashids\Hashids;
 
 class User extends Authenticatable implements JWTSubject
 {
@@ -67,5 +70,39 @@ class User extends Authenticatable implements JWTSubject
     public function getJWTCustomClaims()
     {
         return [];
+    }
+
+    /**
+     * Get encoded id by hashids 
+     */
+    public function getHashedIdAttribute()
+    {
+        $hashids = new Hashids('users', 10);
+        return $hashids->encode($this->attributes['id']);
+    }
+
+    /**
+     * Get decoded hashids to id
+     */
+    public static function decodeHashId($hashedId)
+    {
+        $hashids = new Hashids('users', 10);
+        return $hashids->decode($hashedId)[0] ?? null;
+    }
+
+    /**
+     * The user that has many the orders.
+     */
+    public function orders(): HasMany
+    {
+        return $this->hasMany(Order::class, 'user_id');
+    }
+
+    /**
+     * The user that has one the carts.
+     */
+    public function cart(): HasOne
+    {
+        return $this->hasOne(Cart::class, 'user_id');
     }
 }
