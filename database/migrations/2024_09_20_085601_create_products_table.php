@@ -17,7 +17,8 @@ return new class extends Migration
             $table->string('slug');
             $table->longText('description')->nullable();
             $table->float('real_price');
-            $table->float('selling_price');
+            $table->float('daily_price');
+            $table->float('flash_sale_price');
             $table->unsignedInteger('stock_quantity');
             $table->unsignedInteger('sold_quantity');
             $table->string('image_url')->nullable();

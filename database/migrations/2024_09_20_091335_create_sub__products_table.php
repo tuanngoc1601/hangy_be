@@ -15,7 +15,9 @@ return new class extends Migration
             $table->bigIncrements('id');
             $table->string('name');
             $table->text('description')->nullable();
-            $table->float('selling_price')->nullable();
+            $table->float('real_price')->nullable();
+            $table->float('daily_price')->nullable();
+            $table->float('flash_sale_price')->nullable();
             $table->unsignedInteger('stock_quantity');
             $table->unsignedInteger('sold_quantity');
             $table->unsignedBigInteger('product_id');
