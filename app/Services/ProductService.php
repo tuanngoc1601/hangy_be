@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Models\Category;
 use App\Models\Product;
+use Hashids\Hashids;
 use Illuminate\Support\Facades\DB;
 
 class ProductService
@@ -18,10 +19,18 @@ class ProductService
     public function getProductServiceByQuery(?string $type, ?string $search)
     {
         if (!is_null($search)) {
-            return DB::table('products')->where(function ($q) use ($search) {
+            $products = DB::table('products')->where(function ($q) use ($search) {
                 $q->where('name', 'like', "%{$search}%")
                     ->orWhere('description', 'like', "%{$search}%");
             })->get();
+            // $products = Product::hydrate($products->toArray());
+            $hashids = new Hashids('products', 10);
+            $mappedProducts = $products->map(function ($product) use ($hashids) {
+                $product->id = $hashids->encode($product->id);
+                $product->slug = $product->slug . '-' . $product->id;
+                return $product;
+            });
+            return $mappedProducts;
         }
 
         if (!is_null($type)) {

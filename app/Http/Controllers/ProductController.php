@@ -30,7 +30,7 @@ class ProductController extends Controller
         );
 
         return response()->json([
-            'data' => ProductResource::collection($products),
+            'data' => $request->search ? $products : ProductResource::collection($products),
             'message' => 'Ok',
         ]);
     }
