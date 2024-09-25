@@ -41,4 +41,19 @@ class ProductService
 
         return Product::all();
     }
+
+    /**
+     * get product detail by slug params
+     *
+     * @param string $slug
+     * @return App\Models\Product;
+     */
+    public function getProductDetailServiceById(string $slug)
+    {
+        $decodedId = Product::decodeHashId(substr($slug, -10));
+
+        return Product::with('sub_products')
+            ->where('id', $decodedId)
+            ->first();
+    }
 }

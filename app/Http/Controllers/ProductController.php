@@ -34,4 +34,26 @@ class ProductController extends Controller
             'message' => 'Ok',
         ]);
     }
+
+    /**
+     * get product details by slug
+     * 
+     * @param slug: string;
+     * @return new Product
+     */
+    public function getProductDetail(Request $request, string $slug)
+    {
+        if (!$slug) {
+            return response()->json([
+                'message' => 'Parameter is not valid!',
+            ], 400);
+        }
+
+        $product = $this->productService->getProductDetailServiceById($slug);
+
+        return response()->json([
+            'data' => new ProductResource($product),
+            'message' => 'Ok',
+        ]);
+    }
 }

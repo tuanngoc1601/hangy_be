@@ -25,6 +25,21 @@ class ProductResource extends JsonResource
             'stock_quantity' => $this->stock_quantity,
             'sold_quantity' => $this->sold_quantity,
             'image_url' => $this->image_url,
+            'sub_products' => $this->whenLoaded('sub_products', function () {
+                return $this->sub_products->map(function ($subProduct) {
+                    return [
+                        'id' => $subProduct->getHashedIdAttribute(),
+                        'name' => $subProduct->name,
+                        'real_price' => $subProduct->real_price,
+                        'daily_price' => $subProduct->daily_price,
+                        'flash_sale_price' => $subProduct->flash_sale_price,
+                        'stock_quantity' => $subProduct->stock_quantity,
+                        'sold_quantity' => $subProduct->sold_quantity,
+                        'product_id' => $this->getHashedIdAttribute(),
+                        'image_url' => $subProduct->image_url,
+                    ];
+                });
+            }),
         ];
     }
 }
