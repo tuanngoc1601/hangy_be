@@ -25,7 +25,7 @@ class ProductResource extends JsonResource
             'stock_quantity' => $this->stock_quantity,
             'sold_quantity' => $this->sold_quantity,
             'image_url' => $this->image_url,
-            'sub_products' => $this->whenLoaded('sub_products', function () {
+            'sub_products' => $this->when($this->sub_products->isNotEmpty(), function () {
                 return $this->sub_products->map(function ($subProduct) {
                     return [
                         'id' => $subProduct->getHashedIdAttribute(),
