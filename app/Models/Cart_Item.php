@@ -25,6 +25,7 @@ class Cart_Item extends Model
         "product_id",
         "sub_product_id",
         "quantity",
+        "price",
         "amount",
         "created_at",
         "updated_at"

@@ -25,7 +25,7 @@ class Order_Item extends Model
         "product_id",
         "sub_product_id",
         "quantity",
-        "selling_price",
+        "price",
         "sub_total_price",
         "created_at",
         "updated_at"
