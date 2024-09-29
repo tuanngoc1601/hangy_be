@@ -6,9 +6,24 @@ use App\Models\Cart;
 use App\Models\Cart_Item;
 use App\Models\Product;
 use App\Models\Sub_Product;
+use Illuminate\Http\Request;
 
 class CartSerivce
 {
+    /**
+     * find cart items
+     * @param int $cartId
+     * @param string $productId
+     * @param string $subProductId
+     */
+    public function findCartItem(int $cartId, string $productId, string $subProductId)
+    {
+        return Cart_Item::where('cart_id', $cartId)
+            ->where('product_id', Product::decodeHashId($productId))
+            ->where('sub_product_id', Sub_Product::decodeHashId($subProductId))
+            ->first();
+    }
+
     /**
      * get cart service
      * 
@@ -38,10 +53,7 @@ class CartSerivce
             'user_id' => $user_id,
         ]);
 
-        $item = Cart_Item::where('cart_id', $cart->id)
-            ->where('product_id', Product::decodeHashId($request['product_id']))
-            ->where('sub_product_id', Sub_Product::decodeHashId($request['sub_product_id']))
-            ->first();
+        $item = $this->findCartItem($cart->id, $request['product_id'], $request['sub_product_id']);
 
         if ($item) {
             $item->quantity = $item->quantity + 1;
@@ -61,5 +73,74 @@ class CartSerivce
 
             return $newItem;
         }
+    }
+
+    /**
+     * update cart item quantity service
+     * 
+     * @param string $productId
+     * @param string $type
+     * @return message
+     */
+    public function updateCartItemQuantityService(string $productId, string $subProductId, string $type, int $user_id)
+    {
+        $cart = Cart::firstOrCreate([
+            'user_id' => $user_id,
+        ]);
+
+        $cartItem = $this->findCartItem($cart->id, $productId, $subProductId);
+
+        if (!$cartItem) {
+            return ['data' => 'Not found', 'code' => 404];
+        }
+
+        if ($type === "increase") {
+            $cartItem->quantity += 1;
+            $cartItem->amount += $cartItem->price;
+            $cartItem->save();
+            return ['data' => 'success'];
+        }
+
+        if ($cartItem->quantity === 1) {
+            $cartItem->delete();
+        } else {
+            $cartItem->quantity -= 1;
+            $cartItem->amount -= $cartItem->price;
+            $cartItem->save();
+        }
+
+        return ['data' => 'success'];
+    }
+
+    /**
+     * update sub product cart item service
+     * @param string $productId
+     * @param string | null $subProductId
+     * @return string
+     */
+    public function updateCartItemSubProduct(Request $request, string $productId, string $subProductId, int $user_id)
+    {
+        $cart = Cart::firstOrCreate([
+            'user_id' => $user_id,
+        ]);
+
+        $cartItem = $this->findCartItem($cart->id, $productId, $subProductId);
+
+        if (!$cartItem) {
+            return ['data' => 'Not found', 'code' => 404];
+        }
+
+        $cartItem->sub_product_id = Sub_Product::decodeHashId($request->sub);
+
+        $subProduct = Sub_Product::find(Sub_Product::decodeHashId($request->sub));
+
+        if ($subProduct->daily_price) {
+            $cartItem->price = $subProduct->daily_price;
+            $cartItem->amount = $cartItem->quantity * $cartItem->price;
+        }
+
+        $cartItem->save();
+
+        return ['data' => 'success'];
     }
 }

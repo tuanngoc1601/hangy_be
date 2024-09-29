@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\AddCartRequest;
 use App\Http\Resources\CartItemResource;
+use App\Models\Cart_Item;
 use App\Services\CartSerivce;
 use Illuminate\Http\Request;
 use Tymon\JWTAuth\Facades\JWTAuth;
@@ -69,5 +70,74 @@ class CartController extends Controller
         return response()->json([
             'data' => 'success',
         ]);
+    }
+
+    /**
+     * update cart item quantity
+     * 
+     * @param string $productId
+     * @param string $type
+     * @return string $message
+     */
+    public function updateQuantityCart(string $type, string $productId, string $subProductId)
+    {
+        // get user id by token
+        $userId = $this->decodedToken();
+
+        $res = $this->cartService->updateCartItemQuantityService($productId, $subProductId, $type, $userId);
+
+        if (isset($res['code'])) {
+            return response()->json([
+                'data' => $res['data'],
+            ], $res['code']);
+        }
+
+        return response()->json($res);
+    }
+
+    /**
+     * update sub product cart items
+     * 
+     * @param string $productId
+     * @param string | null $subProductId
+     * @return string $message
+     */
+    public function updateSubProductCart(Request $request, string $productId, string $subProductId)
+    {
+        $request->validate([
+            'sub' => 'required|string',
+        ]);
+
+        // get user id by token
+        $userId = $this->decodedToken();
+
+        $res = $this->cartService->updateCartItemSubProduct($request, $productId, $subProductId, $userId);
+
+        if (isset($res['code'])) {
+            return response()->json([
+                'data' => $res['data'],
+            ], $res['code']);
+        }
+
+        return response()->json($res);
+    }
+
+    /**
+     * delete cart item
+     * 
+     * @param string $cartItemId
+     * @return string $message
+     */
+    public function deleteCartItem(Request $request, string $cartItemId)
+    {
+        $decodedId = Cart_Item::decodeHashId($cartItemId);
+
+        $cartItem = Cart_Item::find($decodedId);
+
+        if (!$cartItem) return response()->json(['data' => 'Not found'], 404);
+
+        $cartItem->delete();
+
+        return response()->json(['data' => 'success'], 200);
     }
 }
