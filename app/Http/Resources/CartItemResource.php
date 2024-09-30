@@ -29,6 +29,20 @@ class CartItemResource extends JsonResource
                     'stock_quantity' => $product->stock_quantity,
                     'sold_quantity' => $product->sold_quantity,
                     'image_url' => $product->image_url,
+                    'sub_products' => $product->when($product->sub_products->isNotEmpty(), function () use ($product) {
+                        return $product->sub_products->map(function ($subProduct) {
+                            return [
+                                'id' => $subProduct->getHashedIdAttribute(),
+                                'name' => $subProduct->name,
+                                'real_price' => $subProduct->real_price,
+                                'daily_price' => $subProduct->daily_price,
+                                'flash_sale_price' => $subProduct->flash_sale_price,
+                                'stock_quantity' => $subProduct->stock_quantity,
+                                'sold_quantity' => $subProduct->sold_quantity,
+                                'image_url' => $subProduct->image_url,
+                            ];
+                        });
+                    }),
                 ];
             }),
             'sub_product' => $this->whenLoaded('sub_product', function ($sub_product) {

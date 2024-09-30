@@ -16,11 +16,17 @@ class CartSerivce
      * @param string $productId
      * @param string $subProductId
      */
-    public function findCartItem(int $cartId, string $productId, string $subProductId)
+    public function findCartItem(string $cartId, string $productId, $subProductId)
     {
+        if ($subProductId)
+            return Cart_Item::where('cart_id', $cartId)
+                ->where('product_id', Product::decodeHashId($productId))
+                ->where('sub_product_id', Sub_Product::decodeHashId($subProductId))
+                ->first();
+
         return Cart_Item::where('cart_id', $cartId)
             ->where('product_id', Product::decodeHashId($productId))
-            ->where('sub_product_id', Sub_Product::decodeHashId($subProductId))
+            ->whereNull('sub_product_id')
             ->first();
     }
 
@@ -36,7 +42,7 @@ class CartSerivce
 
         if (!$cart) return [];
 
-        $cartItems = Cart_Item::with(['product', 'sub_product'])->where('cart_id', $cart->id)->get();
+        $cartItems = Cart_Item::with(['product.sub_products', 'sub_product'])->where('cart_id', $cart->id)->get();
 
         return $cartItems;
     }
@@ -65,7 +71,7 @@ class CartSerivce
             $newItem = Cart_Item::create([
                 'cart_id' => $cart->id,
                 'product_id' => Product::decodeHashId($request['product_id']),
-                'sub_product_id' => Sub_Product::decodeHashId($request['sub_product_id']),
+                'sub_product_id' => $request['sub_product_id'] ? Sub_Product::decodeHashId($request['sub_product_id']) : null,
                 'quantity' => $request['quantity'],
                 'price' => $request['price'],
                 'amount' => $request['amount'],
@@ -136,8 +142,12 @@ class CartSerivce
 
         if ($subProduct->daily_price) {
             $cartItem->price = $subProduct->daily_price;
-            $cartItem->amount = $cartItem->quantity * $cartItem->price;
+        } else {
+            $product = Product::find(Product::decodeHashId($productId));
+            $cartItem->price = $product->daily_price;
         }
+
+        $cartItem->amount = $cartItem->quantity * $cartItem->price;
 
         $cartItem->save();
 

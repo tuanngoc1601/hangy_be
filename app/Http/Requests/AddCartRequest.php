@@ -23,7 +23,7 @@ class AddCartRequest extends FormRequest
     {
         return [
             'product_id' => 'string|required',
-            'sub_product_id' => 'string|required',
+            'sub_product_id' => 'string|nullable',
             'quantity' => 'numeric|required|min:1',
             'price' => 'numeric|required',
             'amount' => 'numeric|required',
