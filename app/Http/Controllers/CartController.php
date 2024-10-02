@@ -170,4 +170,35 @@ class CartController extends Controller
             'data' => 'success',
         ]);
     }
+
+    /**
+     * get selected cart items to purchase
+     * 
+     * @param cart_item_ids array string[]
+     * @return cart items list: array
+     */
+    public function getSelectedItems(Request $request)
+    {
+        $validated = $request->validate([
+            'cart_item_ids' => 'required|array',
+            'cart_item_ids.*' => 'string',
+        ]);
+
+        $decodedIds = array_map(function ($id) {
+            return Cart_Item::decodeHashId($id);
+        }, $validated['cart_item_ids']);
+
+        $request->merge(['cart_item_ids' => $decodedIds]); // Thay thế giá trị gốc trong request
+
+        $validated = $request->validate([
+            'cart_item_ids.*' => 'exists:cart_items,id',
+        ]);
+
+        $data = Cart_Item::with(['product', 'sub_product'])->find([$validated]);
+
+        return response()->json([
+            'data' => CartItemResource::collection($data),
+            'message' => 'Ok',
+        ]);
+    }
 }

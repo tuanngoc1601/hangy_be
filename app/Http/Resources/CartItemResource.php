@@ -29,7 +29,7 @@ class CartItemResource extends JsonResource
                     'stock_quantity' => $product->stock_quantity,
                     'sold_quantity' => $product->sold_quantity,
                     'image_url' => $product->image_url,
-                    'sub_products' => $product->when($product->sub_products->isNotEmpty(), function () use ($product) {
+                    'sub_products' => $this->whenLoaded('sub_products', function () use ($product) {
                         return $product->sub_products->map(function ($subProduct) {
                             return [
                                 'id' => $subProduct->getHashedIdAttribute(),

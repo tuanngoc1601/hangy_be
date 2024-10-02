@@ -19,4 +19,5 @@ Route::group(['prefix' => 'api/v1'], function () {
     Route::put('/carts/update/{productId}/{subProductId}', [CartController::class, 'updateSubProductCart'])->middleware('auth:api');
     Route::delete('/carts/delete/{cartItemId}', [CartController::class, 'deleteCartItem'])->middleware('auth:api');
     Route::post('/carts/delete/all-carts', [CartController::class, 'deleteAllCartItems'])->middleware('auth:api');
+    Route::post('/carts/get-selected-items', [CartController::class, 'getSelectedItems'])->middleware('auth:api');
 });
