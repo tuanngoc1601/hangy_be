@@ -140,4 +140,34 @@ class CartController extends Controller
 
         return response()->json(['data' => 'success'], 200);
     }
+
+    /**
+     * detele all cart items
+     * 
+     * @param Request $request
+     * @return $string $message
+     */
+    public function deleteAllCartItems(Request $request)
+    {
+        $validated = $request->validate([
+            'cart_item_ids' => 'required|array',
+            'cart_item_ids.*' => 'string',
+        ]);
+
+        $decodedIds = array_map(function ($id) {
+            return Cart_Item::decodeHashId($id);
+        }, $validated['cart_item_ids']);
+
+        $request->merge(['cart_item_ids' => $decodedIds]); // Thay thế giá trị gốc trong request
+
+        $validated = $request->validate([
+            'cart_item_ids.*' => 'exists:cart_items,id',
+        ]);
+
+        Cart_Item::destroy($validated['cart_item_ids']);
+
+        return response()->json([
+            'data' => 'success',
+        ]);
+    }
 }
