@@ -30,7 +30,6 @@ class Product extends Model
         "flash_sale_price",
         "stock_quantity",
         "sold_quantity",
-        "image_url",
         "created_at",
         "updated_at"
     ];
@@ -90,5 +89,13 @@ class Product extends Model
     public function sub_products(): HasMany
     {
         return $this->hasMany(Sub_Product::class, 'product_id');
+    }
+
+    /**
+     * The products that has many the medias.
+     */
+    public function medias(): HasMany
+    {
+        return $this->hasMany(Media::class, 'product_id');
     }
 }

@@ -28,8 +28,15 @@ class CartItemResource extends JsonResource
                     'flash_sale_price' => $product->flash_sale_price,
                     'stock_quantity' => $product->stock_quantity,
                     'sold_quantity' => $product->sold_quantity,
-                    'image_url' => $product->image_url,
-                    'sub_products' => $this->whenLoaded('sub_products', function () use ($product) {
+                    'images' => $this->when($this->relationLoaded('product') && $this->product->relationLoaded('medias'), function () use ($product) {
+                        return $product->medias->map(function ($image) {
+                            return [
+                                'id' => $image->getHashedIdAttribute(),
+                                'url' => $image->url,
+                            ];
+                        });
+                    }),
+                    'sub_products' => $this->when($this->relationLoaded('product') && $this->product->relationLoaded('sub_products'), function () use ($product) {
                         return $product->sub_products->map(function ($subProduct) {
                             return [
                                 'id' => $subProduct->getHashedIdAttribute(),

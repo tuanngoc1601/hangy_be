@@ -21,7 +21,6 @@ return new class extends Migration
             $table->float('flash_sale_price');
             $table->unsignedInteger('stock_quantity');
             $table->unsignedInteger('sold_quantity');
-            $table->string('image_url')->nullable();
             $table->timestamps();
         });
     }

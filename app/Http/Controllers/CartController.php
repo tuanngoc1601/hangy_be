@@ -194,7 +194,7 @@ class CartController extends Controller
             'cart_item_ids.*' => 'exists:cart_items,id',
         ]);
 
-        $data = Cart_Item::with(['product', 'sub_product'])->find([$validated]);
+        $data = Cart_Item::with(['product.medias', 'sub_product'])->find([$validated]);
 
         return response()->json([
             'data' => CartItemResource::collection($data),

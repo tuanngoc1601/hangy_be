@@ -24,7 +24,14 @@ class ProductResource extends JsonResource
             'flash_sale_price' => $this->flash_sale_price,
             'stock_quantity' => $this->stock_quantity,
             'sold_quantity' => $this->sold_quantity,
-            'image_url' => $this->image_url,
+            'images' => $this->whenLoaded('medias', function () {
+                return $this->medias->map(function ($image) {
+                    return [
+                        'id' => $image->getHashedIdAttribute(),
+                        'url' => $image->url,
+                    ];
+                });
+            }),
             'sub_products' => $this->when($this->sub_products->isNotEmpty(), function () {
                 return $this->sub_products->map(function ($subProduct) {
                     return [

@@ -42,7 +42,7 @@ class CartSerivce
 
         if (!$cart) return [];
 
-        $cartItems = Cart_Item::with(['product.sub_products', 'sub_product'])->where('cart_id', $cart->id)->get();
+        $cartItems = Cart_Item::with(['product.sub_products', 'product.medias', 'sub_product'])->where('cart_id', $cart->id)->get();
 
         return $cartItems;
     }

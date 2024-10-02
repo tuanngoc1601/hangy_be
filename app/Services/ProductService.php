@@ -36,10 +36,10 @@ class ProductService
         if (!is_null($type)) {
             return Product::whereHas('categories', function ($query) use ($type) {
                 $query->where('categories.id', Category::decodeHashId($type));
-            })->with('categories')->get();
+            })->with(['categories', 'medias'])->get();
         }
 
-        return Product::all();
+        return Product::with('medias')->get();
     }
 
     /**
@@ -52,7 +52,7 @@ class ProductService
     {
         $decodedId = Product::decodeHashId(substr($slug, -10));
 
-        return Product::with('sub_products')
+        return Product::with(['sub_products', 'medias'])
             ->where('id', $decodedId)
             ->first();
     }
