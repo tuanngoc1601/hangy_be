@@ -18,6 +18,7 @@ Route::group([
     Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth:api')->name('logout');
     Route::post('/refresh', [AuthController::class, 'refresh'])->name('refresh');
     Route::get('/me', [AuthController::class, 'me'])->middleware('auth:api')->name('me');
+    Route::put('/update', [AuthController::class, 'update'])->middleware('auth:api')->name('update');
 });
 
 Route::group([

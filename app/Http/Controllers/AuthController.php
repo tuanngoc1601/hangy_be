@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\LoginRequest;
 use App\Http\Requests\RegisterRequest;
+use App\Http\Requests\UserInfoRequest;
 use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -63,6 +64,23 @@ class AuthController extends Controller
             'message' => "Ok",
             'data' => Auth::user(),
         ], 200);
+    }
+
+    /**
+     * update user profile
+     * 
+     * @param Request $request
+     * @return Response $message
+     */
+    public function update(UserInfoRequest $request)
+    {
+        $credentials = $request->validated();
+
+        Auth::user()->update($credentials);
+
+        return response()->json([
+            'data' => 'success',
+        ]);
     }
 
     /**
