@@ -3,6 +3,7 @@
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ContactController;
+use App\Http\Controllers\OrderController;
 use App\Http\Controllers\ProductController;
 use Illuminate\Support\Facades\Route;
 
@@ -22,4 +23,5 @@ Route::group(['prefix' => 'api/v1'], function () {
     Route::post('/carts/delete/all-carts', [CartController::class, 'deleteAllCartItems'])->middleware('auth:api');
     Route::post('/carts/get-selected-items', [CartController::class, 'getSelectedItems'])->middleware('auth:api');
     Route::post('/contact/create', [ContactController::class, 'storeContact']);
+    Route::post('/orders/store', [OrderController::class, 'createOrder'])->middleware('auth:api');
 });

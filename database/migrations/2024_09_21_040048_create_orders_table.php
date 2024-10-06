@@ -15,10 +15,12 @@ return new class extends Migration
             $table->bigIncrements('id');
             $table->unsignedBigInteger('user_id');
             $table->date('order_date');
-            $table->string('status');
+            $table->unsignedBigInteger('status_id');
             $table->float('total_amount');
+            $table->text('note_message')->nullable();
             $table->timestamps();
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
+            $table->foreign('status_id')->references('id')->on('statuses')->onDelete('cascade');
         });
     }
 
