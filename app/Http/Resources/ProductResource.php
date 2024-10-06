@@ -32,7 +32,7 @@ class ProductResource extends JsonResource
                     ];
                 });
             }),
-            'sub_products' => $this->when($this->sub_products->isNotEmpty(), function () {
+            'sub_products' => $this->whenLoaded('sub_products', function () {
                 return $this->sub_products->map(function ($subProduct) {
                     return [
                         'id' => $subProduct->getHashedIdAttribute(),

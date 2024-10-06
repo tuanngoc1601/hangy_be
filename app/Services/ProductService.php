@@ -56,4 +56,16 @@ class ProductService
             ->where('id', $decodedId)
             ->first();
     }
+
+    /**
+     * get best selling products service
+     * @param
+     * @return array products
+     */
+    public function getBestSellingProducts()
+    {
+        $products = Product::with('medias')->orderBy('sold_quantity', 'desc')->take(8)->get();
+
+        return $products;
+    }
 }

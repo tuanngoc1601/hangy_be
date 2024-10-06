@@ -56,4 +56,20 @@ class ProductController extends Controller
             'message' => 'Ok',
         ]);
     }
+
+    /**
+     * get best selling products
+     * 
+     * @param Request $request
+     * @return array ProductResource
+     */
+    public function getBestSellings(Request $request)
+    {
+        $data = $this->productService->getBestSellingProducts();
+
+        return response()->json([
+            'data' => ProductResource::collection($data),
+            'messages' => 'Ok',
+        ]);
+    }
 }
