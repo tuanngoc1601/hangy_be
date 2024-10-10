@@ -15,7 +15,6 @@ class StatusSeeder extends Seeder
     {
         $models = array(
             array('name' => 'Chờ xác nhận', 'created_at' => now(), 'updated_at' => now()),
-            array('name' => 'Đã xác nhận', 'created_at' => now(), 'updated_at' => now()),
             array('name' => 'Chờ vận chuyển', 'created_at' => now(), 'updated_at' => now()),
             array('name' => 'Đang vận chuyển', 'created_at' => now(), 'updated_at' => now()),
             array('name' => 'Hoàn thành', 'created_at' => now(), 'updated_at' => now()),

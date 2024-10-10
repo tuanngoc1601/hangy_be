@@ -25,4 +25,8 @@ Route::group(['prefix' => 'api/v1'], function () {
     Route::post('/carts/get-selected-items', [CartController::class, 'getSelectedItems'])->middleware('auth:api');
     Route::post('/contact/create', [ContactController::class, 'storeContact']);
     Route::post('/orders/store', [OrderController::class, 'createOrder'])->middleware('auth:api');
+    Route::get('/orders/get-orders', [OrderController::class, 'getOrderPlaces'])->middleware('auth:api');
+    Route::get('/orders/get-just-order', [OrderController::class, 'getOrderJustPlace'])->middleware('auth:api');
+    Route::post('/orders/re-order', [OrderController::class, 'reOrderPlace'])->middleware('auth:api');
+    Route::get('/orders/get-status', [OrderController::class, 'getStatuses'])->middleware('auth:api');
 });
