@@ -22,12 +22,24 @@ class ProductService
             $products = DB::table('products')->where(function ($q) use ($search) {
                 $q->where('name', 'like', "%{$search}%")
                     ->orWhere('description', 'like', "%{$search}%");
-            })->get();
+            })->get()
+                ->map(function ($product) {
+                    $product->images = DB::table('medias')
+                        ->where('product_id', $product->id)
+                        ->select('id', 'url')
+                        ->get();
+                    return $product;
+                });
             // $products = Product::hydrate($products->toArray());
-            $hashids = new Hashids('products', 10);
-            $mappedProducts = $products->map(function ($product) use ($hashids) {
-                $product->id = $hashids->encode($product->id);
+            $productHashids = new Hashids('products', 10);
+            $mediaHashids = new Hashids('medias', 10);
+            $mappedProducts = $products->map(function ($product) use ($productHashids, $mediaHashids) {
+                $product->id = $productHashids->encode($product->id);
                 $product->slug = $product->slug . '-' . $product->id;
+                $product->images->map(function ($image) use ($mediaHashids) {
+                    $image->id = $mediaHashids->encode($image->id);
+                    return $image;
+                });
                 return $product;
             });
             return $mappedProducts;
