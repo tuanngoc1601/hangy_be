@@ -27,6 +27,8 @@ class DatabaseSeeder extends Seeder
             CategoryProductSeeder::class,
             MediaSeeder::class,
             StatusSeeder::class,
+            FlashSaleSeeder::class,
+            FlashSaleProductSeeder::class,
         ]);
     }
 }

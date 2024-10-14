@@ -98,4 +98,12 @@ class Product extends Model
     {
         return $this->hasMany(Media::class, 'product_id');
     }
+
+    /**
+     * The products that belong to the flash_sales.
+     */
+    public function flash_sales(): BelongsToMany
+    {
+        return $this->belongsToMany(FlashSale::class, 'flash_sale_products');
+    }
 }

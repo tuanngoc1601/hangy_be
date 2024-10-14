@@ -3,6 +3,7 @@
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ContactController;
+use App\Http\Controllers\FlashSaleController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\ProductController;
 use Illuminate\Support\Facades\Route;
@@ -29,4 +30,5 @@ Route::group(['prefix' => 'api/v1'], function () {
     Route::get('/orders/get-just-order', [OrderController::class, 'getOrderJustPlace'])->middleware('auth:api');
     Route::post('/orders/re-order', [OrderController::class, 'reOrderPlace'])->middleware('auth:api');
     Route::get('/orders/get-status', [OrderController::class, 'getStatuses'])->middleware('auth:api');
+    Route::get('/sales/get-flash-sales', [FlashSaleController::class, 'getFlashSales']);
 });
