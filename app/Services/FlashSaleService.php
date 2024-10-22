@@ -20,7 +20,11 @@ class FlashSaleService
             ->where('time_end', '>=', Carbon::now())
             ->first();
 
-        if (!$flash_sale) return ['is_flash_sales' => false];
+        if (!$flash_sale) return [
+            'data' => null,
+            'time_start' => null,
+            'time_end' => null,
+        ];
 
         $hashids = new Hashids('products', 10);
 
@@ -35,6 +39,12 @@ class FlashSaleService
                 'flash_sale_price' => $product->flash_sale_price,
                 'stock_quantity' => $product->stock_quantity,
                 'sold_quantity' => $product->sold_quantity,
+                'images' => $product->medias->map(function ($image) {
+                    return [
+                        'id' => $image->getHashedIdAttribute(),
+                        'url' => $image->url,
+                    ];
+                })
             ];
         });
 

@@ -27,7 +27,7 @@ class FlashSaleController extends Controller
 
         return response()->json([
             'data' => [
-                'is_flash_sales' => true,
+                'is_flash_sales' => $data['data'] ? true : false,
                 'time_start' => $data['time_start'],
                 'time_end' => $data['time_end'],
                 'product_sales' => $data['data'],
