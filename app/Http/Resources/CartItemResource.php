@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources;
 
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -14,12 +15,17 @@ class CartItemResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
+        $flash_sale = $this->product->flash_sales()
+            ->where('time_start', '<=', Carbon::now())
+            ->where('time_end', '>=', Carbon::now())
+            ->first();
+
         return [
             'id' => $this->getHashedIdAttribute(),
             'quantity' => $this->quantity,
             'price' => $this->price,
             'amount' => $this->amount,
-            'product' => $this->whenLoaded('product', function ($product) {
+            'product' => $this->whenLoaded('product', function ($product) use ($flash_sale) {
                 return [
                     'id' => $product->getHashedIdAttribute(),
                     'name' => $product->name,
@@ -28,6 +34,7 @@ class CartItemResource extends JsonResource
                     'flash_sale_price' => $product->flash_sale_price,
                     'stock_quantity' => $product->stock_quantity,
                     'sold_quantity' => $product->sold_quantity,
+                    'is_flash_sales' => $flash_sale ? true : false,
                     'images' => $this->when($this->relationLoaded('product') && $this->product->relationLoaded('medias'), function () use ($product) {
                         return $product->medias->map(function ($image) {
                             return [
