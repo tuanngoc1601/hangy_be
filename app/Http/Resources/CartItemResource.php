@@ -24,7 +24,9 @@ class CartItemResource extends JsonResource
             'id' => $this->getHashedIdAttribute(),
             'quantity' => $this->quantity,
             'price' => $this->price,
+            'flash_sale_price' => $this->flash_sale_price,
             'amount' => $this->amount,
+            'flash_sale_amount' => $this->flash_sale_amount,
             'product' => $this->whenLoaded('product', function ($product) use ($flash_sale) {
                 return [
                     'id' => $product->getHashedIdAttribute(),

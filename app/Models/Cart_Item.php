@@ -26,7 +26,9 @@ class Cart_Item extends Model
         "sub_product_id",
         "quantity",
         "price",
+        'flash_sale_price',
         "amount",
+        'flash_sale_amount',
         "created_at",
         "updated_at"
     ];

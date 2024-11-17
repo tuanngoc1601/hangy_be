@@ -74,7 +74,9 @@ class CartSerivce
                 'sub_product_id' => $request['sub_product_id'] ? Sub_Product::decodeHashId($request['sub_product_id']) : null,
                 'quantity' => $request['quantity'],
                 'price' => $request['price'],
+                'flash_sale_price' => $request['flash_sale_price'],
                 'amount' => $request['amount'],
+                'flash_sale_amount' => $request['flash_sale_amount']
             ]);
 
             return $newItem;

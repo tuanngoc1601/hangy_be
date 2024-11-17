@@ -18,7 +18,9 @@ return new class extends Migration
             $table->unsignedBigInteger('sub_product_id')->nullable();
             $table->unsignedInteger('quantity');
             $table->float('price');
+            $table->float('flash_sale_price');
             $table->float('amount');
+            $table->float('flash_sale_amount');
             $table->timestamps();
             $table->foreign('cart_id')->references('id')->on('carts')->onDelete('cascade');
             $table->foreign('product_id')->references('id')->on('products')->onDelete('cascade');

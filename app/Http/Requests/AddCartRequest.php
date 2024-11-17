@@ -26,7 +26,9 @@ class AddCartRequest extends FormRequest
             'sub_product_id' => 'string|nullable',
             'quantity' => 'numeric|required|min:1',
             'price' => 'numeric|required',
+            'flash_sale_price' => 'numeric|required',
             'amount' => 'numeric|required',
+            'flash_sale_amount' => 'numeric|required'
         ];
     }
 }

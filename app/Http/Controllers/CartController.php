@@ -68,7 +68,7 @@ class CartController extends Controller
         $cartItem = $this->cartService->addCartService($userId, $credentials);
 
         return response()->json([
-            'data' => 'success',
+            'data' => new CartItemResource($cartItem),
         ]);
     }
 
